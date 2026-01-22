@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// Task represents a to-do item
 type Task struct {
 	ID          int       `json:"id"`
 	Description string    `json:"description"`
@@ -18,7 +17,6 @@ type Task struct {
 
 const fileName = "tasks.json"
 
-// LoadTasks reads tasks from the JSON file
 func LoadTasks() ([]Task, error) {
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 		return []Task{}, nil
@@ -38,7 +36,6 @@ func LoadTasks() ([]Task, error) {
 	return tasks, nil
 }
 
-// SaveTasks writes tasks to the JSON file
 func SaveTasks(tasks []Task) error {
 	data, err := json.MarshalIndent(tasks, "", "  ")
 	if err != nil {
@@ -48,7 +45,6 @@ func SaveTasks(tasks []Task) error {
 	return os.WriteFile(fileName, data, 0644)
 }
 
-// AddTask adds a new task to the list
 func AddTask(description string) error {
 	tasks, err := LoadTasks()
 	if err != nil {
@@ -71,7 +67,6 @@ func AddTask(description string) error {
 	return SaveTasks(tasks)
 }
 
-// ListTasks prints all tasks
 func ListTasks() error {
 	tasks, err := LoadTasks()
 	if err != nil {
@@ -84,7 +79,6 @@ func ListTasks() error {
 	}
 
 	fmt.Println("ID  Done  Description")
-	fmt.Println("---------------------")
 	for _, t := range tasks {
 		status := "[ ]"
 		if t.Done {
@@ -95,7 +89,6 @@ func ListTasks() error {
 	return nil
 }
 
-// CompleteTask marks a task as done
 func CompleteTask(id int) error {
 	tasks, err := LoadTasks()
 	if err != nil {
@@ -119,7 +112,6 @@ func CompleteTask(id int) error {
 	return SaveTasks(tasks)
 }
 
-// DeleteTask removes a task by ID
 func DeleteTask(id int) error {
 	tasks, err := LoadTasks()
 	if err != nil {
