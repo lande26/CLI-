@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"text/tabwriter"
 	"time"
 )
 
@@ -78,15 +79,34 @@ func ListTasks() error {
 		return nil
 	}
 
-	fmt.Println("ID  Done  Description")
+	/*
+		// OLD LOGIC: Manual formatting
+		fmt.Println("ID  Done  Description")
+		for _, t := range tasks {
+			status := "[ ]"
+			if t.Done {
+				status = "[x]"
+			}
+			fmt.Printf("%-3d %s   %s\n", t.ID, status, t.Description)
+		}
+	*/
+
+	// NEW LOGIC: Using text/tabwriter for elastic columns
+	// NewWriter(output, minwidth, tabwidth, padding, padchar, flags)
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
+	fmt.Fprintln(w, "ID\tDone\tDescription")
+
 	for _, t := range tasks {
 		status := "[ ]"
 		if t.Done {
 			status = "[x]"
 		}
-		fmt.Printf("%-3d %s   %s\n", t.ID, status, t.Description)
+		// \t (tab) tells the writer where the next column starts
+		fmt.Fprintf(w, "%d\t%s\t%s\n", t.ID, status, t.Description)
 	}
-	return nil
+
+	// Flush writes the aligned output to os.Stdout
+	return w.Flush()
 }
 
 func CompleteTask(id int) error {
